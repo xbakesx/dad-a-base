@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Joke {
+public class Joke implements Comparable<Joke> {
 
     private final UUID id;
     private String joke;
@@ -38,5 +38,10 @@ public class Joke {
         else {
             tags.add(tag);
         }
+    }
+
+    @Override
+    public int compareTo(final Joke joke) {
+        return id.compareTo(joke.getId());
     }
 }

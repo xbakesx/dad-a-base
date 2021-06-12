@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,9 +58,17 @@ public class JokeFileResource {
             logger.error("Failed to read the joke file: {}", e.getMessage(), e);
         }
 
+        Collections.sort(jokes);  // Sort so we have a consistent ordering for the daily endpoint
+
         taggedJokes.entrySet().stream()
                    .filter(entry -> entry.getValue().size() == 1)
                    .forEach(entry -> logger.info("{} has only one joke: {}", entry.getKey(), entry.getValue().get(0).getJoke()));
+        for (final String tag : taggedJokes.keySet()) {
+            // Sort each tagged list so we have a consistent ordering for the daily endpoint
+            final List<Joke> jokesWithinTag = taggedJokes.get(tag);
+            Collections.sort(jokesWithinTag);
+            taggedJokes.put(tag, jokesWithinTag);
+        }
         jokes.stream()
              .filter(joke -> joke.getTags().size() == 0)
              .forEach(joke -> logger.info("Joke with no tags: {}", joke.getJoke()));

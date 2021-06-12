@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -38,6 +40,12 @@ public class JokeController {
         return allJokes.get(new Random().nextInt(allJokes.size()));
     }
 
+    @GetMapping("/daily")
+    public Joke getTodaysJoke() {
+        final int dayOfYear = new GregorianCalendar().get(Calendar.DAY_OF_YEAR);
+        return allJokes.get(dayOfYear % allJokes.size());
+    }
+
     @GetMapping("/tag/{tag}")
     public String getRandomJokeWithinTag(@PathVariable("tag") final String tag) {
         final List<Joke> jokes = taggedJokes.get(tag);
@@ -48,5 +56,12 @@ public class JokeController {
     public Joke getRandomJokeWithinTagWithMetadata(@PathVariable("tag") final String tag) {
         final List<Joke> jokes = taggedJokes.get(tag);
         return jokes.get(new Random().nextInt(jokes.size()));
+    }
+
+    @GetMapping("/tag/{tag}/daily")
+    public Joke getTodaysJokeWithinTag(@PathVariable("tag") final String tag) {
+        final int dayOfYear = new GregorianCalendar().get(Calendar.DAY_OF_YEAR);
+        final List<Joke> jokes = taggedJokes.get(tag);
+        return jokes.get(dayOfYear % jokes.size());
     }
 }
