@@ -13,7 +13,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,5 +66,13 @@ public class JokeController {
         final int dayOfYear = new GregorianCalendar().get(Calendar.DAY_OF_YEAR);
         final List<Joke> jokes = taggedJokes.get(tag);
         return jokes.get(dayOfYear % jokes.size());
+    }
+
+    @GetMapping("/tag")
+    public Map<String, Integer> getAllTags() {
+        return taggedJokes.entrySet()
+                          .stream()
+                          .collect(Collectors.toMap(Entry::getKey,
+                                                    entry -> entry.getValue().size()));
     }
 }
